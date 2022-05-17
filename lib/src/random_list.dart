@@ -24,12 +24,8 @@ class _RandomListState extends State<RandomList> {
               icon: Icon(Icons.list),
               onPressed: () {
                 Navigator.of(context)
-                    .push(MaterialPageRoute(builder: (context) => SavedList(saved: saved)))
-                    .then((value){
-                      setState(() {
-
-                      });
-                });
+                    .push(MaterialPageRoute(builder: (context) => SavedList())
+                );
               },
             )
           ],
@@ -39,8 +35,8 @@ class _RandomListState extends State<RandomList> {
 
   Widget _buildList() {
     return StreamBuilder<Set<WordPair>>(
-      stream: bloc.savedStream,
-      builder: (context, snapshot) {
+      stream: bloc.savedStream, // bloc 클래스의 savedStream을 사용하겠다.
+      builder: (context, snapshot) { // streamBuilder 내부의 데이터가 변경될때마다 snapshot이 온다.
 
         return ListView.builder(itemBuilder: (context, index) {
           if (index.isOdd) {
@@ -51,14 +47,15 @@ class _RandomListState extends State<RandomList> {
             final take10 = generateWordPairs().take(10);
             _suggestions.addAll(take10);
           }
+
           return _buildRow(snapshot.data, _suggestions[realIndex]);
         });
       }
     );
   }
 
-  Widget _buildRow(Set<WordPair>? saved, WordPair? pair) {
-    final bool alreadySaved = saved.contains(pair);
+  Widget _buildRow(Set<WordPair>? saved, WordPair pair) {
+    final bool alreadySaved = saved==null? false : saved.contains(pair);
 
     return ListTile(
       title: Text(
